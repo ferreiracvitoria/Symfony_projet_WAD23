@@ -30,7 +30,7 @@ class UserFixtures extends Fixture
                 [
                 'nom' => $faker->lastName,
                 'prenom' => $faker->firstName,
-                'email' => 'user'.$i.'gmail.com',
+                'email' => 'user'.$i.'@gmail.com',
                 'roles' => []
                 ]
         );
