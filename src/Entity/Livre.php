@@ -29,6 +29,19 @@ class Livre
     #[ORM\Column(length: 255)]
     private ?string $resume = null;
 
+    public function hydrate (array $vals){
+        foreach ($vals as $cle => $valeur){
+            if (isset ($vals[$cle])){
+                $nomSet = "set" . ucfirst($cle);
+                $this->$nomSet ($valeur);
+            }
+        }
+    }
+    public function __construct(array $init =[])
+    {
+        $this->hydrate($init);
+    }
+
     public function getId(): ?int
     {
         return $this->id;
