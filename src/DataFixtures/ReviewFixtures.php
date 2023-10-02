@@ -18,7 +18,7 @@ class ReviewFixtures extends Fixture
         $faker = Faker\Factory::create();
         // $user1 = $manager->getRepository(User::class)->findOneBy(['nom' => 'utilisateur1']);
         // $livre1 = $manager->getRepository(Livre::class)->findOneBy(['title' => 'Titre du livre 1']);
-        for ($i=0; $i < 20; $i++){
+        for ($i=0; $i < 10; $i++){
             $review = new Review(
                 [
                     'rating' => $faker->numberBetween(1,5),

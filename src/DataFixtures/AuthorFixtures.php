@@ -16,7 +16,7 @@ class AuthorFixtures extends Fixture
         
         $faker = Faker\Factory::create();
 
-        for ($i = 0; $i < 20; $i++){
+        for ($i = 0; $i < 10; $i++){
             $author = new Author(
                 [
                     'nom' => $faker->lastName(),
