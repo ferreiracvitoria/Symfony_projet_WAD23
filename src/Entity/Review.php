@@ -26,6 +26,9 @@ class Review
     #[ORM\ManyToOne(inversedBy: 'ecrit')]
     private ?User $users = null;
 
+    #[ORM\ManyToOne(inversedBy: 'reviews')]
+    private ?Livre $correspond = null;
+
     public function hydrate (array $vals){
         foreach ($vals as $cle => $valeur){
             if (isset ($vals[$cle])){
@@ -88,6 +91,18 @@ class Review
     public function setUsers(?User $users): static
     {
         $this->users = $users;
+
+        return $this;
+    }
+
+    public function getCorrespond(): ?Livre
+    {
+        return $this->correspond;
+    }
+
+    public function setCorrespond(?Livre $correspond): static
+    {
+        $this->correspond = $correspond;
 
         return $this;
     }

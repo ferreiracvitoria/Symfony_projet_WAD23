@@ -37,6 +37,9 @@ class Livre
     #[ORM\ManyToMany(targetEntity: Genre::class, mappedBy: 'classify')]
     private Collection $classified;
 
+    #[ORM\OneToMany(mappedBy: 'correspond', targetEntity: Review::class)]
+    private Collection $reviews;
+
     public function hydrate (array $vals){
         foreach ($vals as $cle => $valeur){
             if (isset ($vals[$cle])){
@@ -50,6 +53,7 @@ class Livre
         $this->hydrate($init);
         $this->owner = new ArrayCollection();
         $this->classified = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -166,6 +170,36 @@ class Livre
     {
         if ($this->classified->removeElement($classified)) {
             $classified->removeClassify($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): static
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setCorrespond($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): static
+    {
+        if ($this->reviews->removeElement($review)) {
+            // set the owning side to null (unless already changed)
+            if ($review->getCorrespond() === $this) {
+                $review->setCorrespond(null);
+            }
         }
 
         return $this;
