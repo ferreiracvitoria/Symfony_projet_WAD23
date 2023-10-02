@@ -20,7 +20,7 @@ class LivreFixtures extends Fixture
                 [
                     'titre' => $faker->text(),
                     'isbn' => $faker->text(),
-                    'numberPages' => $faker->numberBetween(50, 200),
+                    'numberPages' => $faker->numberBetween(),
                     'dateEdition' => $faker->dateTime(),
                     'Resume' => $faker->text(),
                     'dateEdition' => $faker->dateTime()

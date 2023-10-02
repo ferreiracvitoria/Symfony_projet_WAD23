@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AuthorRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AuthorRepository::class)]
@@ -22,6 +24,9 @@ class Author
     #[ORM\Column(length: 255)]
     private ?string $biographie = null;
 
+    #[ORM\ManyToMany(targetEntity: Livre::class, inversedBy: 'owner')]
+    private Collection $owns;
+
     public function hydrate (array $vals){
         foreach ($vals as $cle => $valeur){
             if (isset ($vals[$cle])){
@@ -33,6 +38,7 @@ class Author
     public function __construct(array $init =[])
     {
         $this->hydrate($init);
+        $this->owns = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -72,6 +78,30 @@ class Author
     public function setBiographie(string $biographie): static
     {
         $this->biographie = $biographie;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Livre>
+     */
+    public function getowns(): Collection
+    {
+        return $this->owns;
+    }
+
+    public function addOwn(Livre $own): static
+    {
+        if (!$this->owns->contains($own)) {
+            $this->owns->add($own);
+        }
+
+        return $this;
+    }
+
+    public function removeOwn(Livre $own): static
+    {
+        $this->owns->removeElement($own);
 
         return $this;
     }

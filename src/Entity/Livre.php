@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\LivreRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -29,6 +31,9 @@ class Livre
     #[ORM\Column(length: 255)]
     private ?string $resume = null;
 
+    #[ORM\ManyToMany(targetEntity: Author::class, mappedBy: 'owns')]
+    private Collection $owner;
+
     public function hydrate (array $vals){
         foreach ($vals as $cle => $valeur){
             if (isset ($vals[$cle])){
@@ -40,6 +45,7 @@ class Livre
     public function __construct(array $init =[])
     {
         $this->hydrate($init);
+        $this->owner = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -103,6 +109,33 @@ class Livre
     public function setResume(string $resume): static
     {
         $this->resume = $resume;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Author>
+     */
+    public function getOwner(): Collection
+    {
+        return $this->owner;
+    }
+
+    public function addOwner(Author $owner): static
+    {
+        if (!$this->owner->contains($owner)) {
+            $this->owner->add($owner);
+            $owner->addOwn($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOwner(Author $owner): static
+    {
+        if ($this->owner->removeElement($owner)) {
+            $owner->removeOwn($this);
+        }
 
         return $this;
     }
