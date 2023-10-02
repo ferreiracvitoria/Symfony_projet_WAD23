@@ -2,13 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+use Doctrine\ORM\Mapping\JoinTable;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -44,6 +45,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'users', targetEntity: Review::class)]
     private Collection $ecrit;
 
+    #[JoinTable(name: 'lectures')]
+    #[ORM\ManyToMany(targetEntity: Livre::class, inversedBy: 'lecteurs')]
+    private Collection $livresLus;
+
+    #[JoinTable(name: 'recommendations')]
+    #[ORM\ManyToMany(targetEntity: Livre::class, inversedBy: 'recommandateurs')]
+    private Collection $livresRecommandes;
+
     // constructeur et hydrate
     public function hydrate (array $vals){
         foreach ($vals as $cle => $valeur){
@@ -57,6 +66,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->hydrate($init);
         $this->ecrit = new ArrayCollection();
+        $this->livresLus = new ArrayCollection();
+        $this->livresRecommandes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -191,6 +202,54 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $ecrit->setUsers(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Livre>
+     */
+    public function getLivresLus(): Collection
+    {
+        return $this->livresLus;
+    }
+
+    public function addLivresLu(Livre $livresLu): static
+    {
+        if (!$this->livresLus->contains($livresLu)) {
+            $this->livresLus->add($livresLu);
+        }
+
+        return $this;
+    }
+
+    public function removeLivresLu(Livre $livresLu): static
+    {
+        $this->livresLus->removeElement($livresLu);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Livre>
+     */
+    public function getLivresRecommandes(): Collection
+    {
+        return $this->livresRecommandes;
+    }
+
+    public function addLivresRecommande(Livre $livresRecommande): static
+    {
+        if (!$this->livresRecommandes->contains($livresRecommande)) {
+            $this->livresRecommandes->add($livresRecommande);
+        }
+
+        return $this;
+    }
+
+    public function removeLivresRecommande(Livre $livresRecommande): static
+    {
+        $this->livresRecommandes->removeElement($livresRecommande);
 
         return $this;
     }

@@ -40,6 +40,12 @@ class Livre
     #[ORM\OneToMany(mappedBy: 'correspond', targetEntity: Review::class)]
     private Collection $reviews;
 
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'livresLus')]
+    private Collection $lecteurs;
+
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'livresRecommandes')]
+    private Collection $recommandateurs;
+
     public function hydrate (array $vals){
         foreach ($vals as $cle => $valeur){
             if (isset ($vals[$cle])){
@@ -54,6 +60,8 @@ class Livre
         $this->owner = new ArrayCollection();
         $this->classified = new ArrayCollection();
         $this->reviews = new ArrayCollection();
+        $this->lecteurs = new ArrayCollection();
+        $this->recommandateurs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -200,6 +208,60 @@ class Livre
             if ($review->getCorrespond() === $this) {
                 $review->setCorrespond(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getLecteurs(): Collection
+    {
+        return $this->lecteurs;
+    }
+
+    public function addLecteur(User $lecteur): static
+    {
+        if (!$this->lecteurs->contains($lecteur)) {
+            $this->lecteurs->add($lecteur);
+            $lecteur->addLivresLu($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLecteur(User $lecteur): static
+    {
+        if ($this->lecteurs->removeElement($lecteur)) {
+            $lecteur->removeLivresLu($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getRecommandateurs(): Collection
+    {
+        return $this->recommandateurs;
+    }
+
+    public function addRecommandateur(User $recommandateur): static
+    {
+        if (!$this->recommandateurs->contains($recommandateur)) {
+            $this->recommandateurs->add($recommandateur);
+            $recommandateur->addLivresRecommande($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRecommandateur(User $recommandateur): static
+    {
+        if ($this->recommandateurs->removeElement($recommandateur)) {
+            $recommandateur->removeLivresRecommande($this);
         }
 
         return $this;
