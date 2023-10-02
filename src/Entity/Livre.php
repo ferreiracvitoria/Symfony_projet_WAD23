@@ -34,6 +34,9 @@ class Livre
     #[ORM\ManyToMany(targetEntity: Author::class, mappedBy: 'owns')]
     private Collection $owner;
 
+    #[ORM\ManyToMany(targetEntity: Genre::class, mappedBy: 'classify')]
+    private Collection $classified;
+
     public function hydrate (array $vals){
         foreach ($vals as $cle => $valeur){
             if (isset ($vals[$cle])){
@@ -46,6 +49,7 @@ class Livre
     {
         $this->hydrate($init);
         $this->owner = new ArrayCollection();
+        $this->classified = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -135,6 +139,33 @@ class Livre
     {
         if ($this->owner->removeElement($owner)) {
             $owner->removeOwn($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Genre>
+     */
+    public function getClassified(): Collection
+    {
+        return $this->classified;
+    }
+
+    public function addClassified(Genre $classified): static
+    {
+        if (!$this->classified->contains($classified)) {
+            $this->classified->add($classified);
+            $classified->addClassify($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClassified(Genre $classified): static
+    {
+        if ($this->classified->removeElement($classified)) {
+            $classified->removeClassify($this);
         }
 
         return $this;
