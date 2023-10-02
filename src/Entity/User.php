@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -39,6 +41,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
 
+    #[ORM\OneToMany(mappedBy: 'users', targetEntity: Review::class)]
+    private Collection $ecrit;
+
     // constructeur et hydrate
     public function hydrate (array $vals){
         foreach ($vals as $cle => $valeur){
@@ -51,6 +56,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct(array $init =[])
     {
         $this->hydrate($init);
+        $this->ecrit = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -155,6 +161,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getEcrit(): Collection
+    {
+        return $this->ecrit;
+    }
+
+    public function addEcrit(Review $ecrit): static
+    {
+        if (!$this->ecrit->contains($ecrit)) {
+            $this->ecrit->add($ecrit);
+            $ecrit->setUsers($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEcrit(Review $ecrit): static
+    {
+        if ($this->ecrit->removeElement($ecrit)) {
+            // set the owning side to null (unless already changed)
+            if ($ecrit->getUsers() === $this) {
+                $ecrit->setUsers(null);
+            }
+        }
 
         return $this;
     }

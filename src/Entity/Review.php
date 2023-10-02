@@ -23,6 +23,9 @@ class Review
     #[ORM\Column]
     private ?int $rating = null;
 
+    #[ORM\ManyToOne(inversedBy: 'ecrit')]
+    private ?User $users = null;
+
     public function hydrate (array $vals){
         foreach ($vals as $cle => $valeur){
             if (isset ($vals[$cle])){
@@ -73,6 +76,18 @@ class Review
     public function setRating(int $rating): static
     {
         $this->rating = $rating;
+
+        return $this;
+    }
+
+    public function getUsers(): ?User
+    {
+        return $this->users;
+    }
+
+    public function setUsers(?User $users): static
+    {
+        $this->users = $users;
 
         return $this;
     }
