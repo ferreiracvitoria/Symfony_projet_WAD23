@@ -10,10 +10,15 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class HomeController extends AbstractController{
 
     #[isGranted('ROLE_USER')]
-    #[Route ('/', name:'home')]
+    #[Route ('/home', name:'home')]
     public function home (){
         return $this->render ('home/accueil.html.twig');
     } 
 
+    // #[Route ('/', name:'home')]
+    // public function home (){
+    //     return $this->redirectToRoute ('home/accueil.html.twig');
 
+    //     redirectToRoute to books
+    // } 
 }

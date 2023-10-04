@@ -6,21 +6,43 @@ use Faker;
 use App\Entity\Genre;
 
 use Doctrine\Persistence\ObjectManager;
-use Doctrine\Bundle\FixturesBundle\Fixture;
-;
+use Doctrine\Bundle\FixturesBundle\Fixture;;
 
 class GenreFixtures extends Fixture
 {
-    
+
     public function load(ObjectManager $manager): void
     {
         $faker = Faker\Factory::create();
+        
+        $genres = [
+            "Fantasy", 
+            "Adventure", 
+            "Romance", 
+            "Contemporary", 
+            "Dystopian",  
+            "Mystery",  
+            "Horror",  
+            "Thriller",  
+            "Science Fiction", 
+            "Children", 
+            "History", 
+            "Self-help", 
+            "Humor", 
+            "Art", 
+            "Poetry",
+        ];
+
         for($i = 0; $i < 10; $i++){
-            $genre = new Genre(
+
+            $randomGenreIndex = mt_rand(0, count($genres)-1);
+            $randomGenre = $genres[$randomGenreIndex];
+            
+            $genre = new Genre (
                 [
-                    'genreName' => $faker->word(),
+                    'genreName'=> $randomGenre,
                 ]
-            );
+                );
             $manager->persist($genre);
         }
         $manager->flush();

@@ -27,7 +27,7 @@ class Review
     private ?User $users = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
-    private ?Livre $correspond = null;
+    private ?Livre $livres = null;
 
     public function hydrate (array $vals){
         foreach ($vals as $cle => $valeur){
@@ -95,14 +95,14 @@ class Review
         return $this;
     }
 
-    public function getCorrespond(): ?Livre
+    public function getLivres(): ?Livre
     {
-        return $this->correspond;
+        return $this->livres;
     }
 
-    public function setCorrespond(?Livre $correspond): static
+    public function setLivres(?Livre $livres): static
     {
-        $this->correspond = $correspond;
+        $this->livres = $livres;
 
         return $this;
     }
