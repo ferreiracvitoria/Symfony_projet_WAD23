@@ -3,5 +3,11 @@
 {% block title %}Hello BookController!{% endblock %}
 
 {% block body %}
- {# on doit liste les genres #}
+    <h1>Liste des genres</h1>
+
+    <form method="post">
+        {{ form_widget(form) }}
+
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+    </form>
 {% endblock %}

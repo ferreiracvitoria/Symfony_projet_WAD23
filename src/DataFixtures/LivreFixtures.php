@@ -19,11 +19,15 @@ class LivreFixtures extends Fixture
             $livre = new Livre(
                 [
                     'titre' => $faker->text(),
-                    'isbn' => $faker->text(),
+                    'isbn' => $faker->isbn10(),
+                    'isbn' => $faker->isbn13(),
                     'numberPages' => $faker->numberBetween(),
                     'dateEdition' => $faker->dateTime(),
                     'Resume' => $faker->text(),
-                    'dateEdition' => $faker->dateTime()
+                    'dateEdition' => $faker->dateTime(),
+                    'thumbnail' => $faker->imageUrl(200, 300),
+                    'smallThumbnail'=> $faker->imageUrl(100, 150)
+                    
                 ]
             );
             $manager->persist($livre);

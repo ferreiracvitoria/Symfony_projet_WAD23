@@ -46,6 +46,12 @@ class Livre
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'livresRecommandes')]
     private Collection $recommandateurs;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $thumbnail = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $smallThumbnail = null;
+
     public function hydrate (array $vals){
         foreach ($vals as $cle => $valeur){
             if (isset ($vals[$cle])){
@@ -263,6 +269,30 @@ class Livre
         if ($this->recommandateurs->removeElement($recommandateur)) {
             $recommandateur->removeLivresRecommande($this);
         }
+
+        return $this;
+    }
+
+    public function getThumbnail(): ?string
+    {
+        return $this->thumbnail;
+    }
+
+    public function setThumbnail(?string $thumbnail): static
+    {
+        $this->thumbnail = $thumbnail;
+
+        return $this;
+    }
+
+    public function getSmallThumbnail(): ?string
+    {
+        return $this->smallThumbnail;
+    }
+
+    public function setSmallThumbnail(?string $smallThumbnail): static
+    {
+        $this->smallThumbnail = $smallThumbnail;
 
         return $this;
     }

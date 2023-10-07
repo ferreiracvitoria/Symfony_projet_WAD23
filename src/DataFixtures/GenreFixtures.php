@@ -2,7 +2,6 @@
 
 namespace App\DataFixtures;
 
-use Faker;
 use App\Entity\Genre;
 
 use Doctrine\Persistence\ObjectManager;
@@ -13,7 +12,6 @@ class GenreFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $faker = Faker\Factory::create();
         
         $genres = [
             "Fantasy", 
@@ -46,5 +44,27 @@ class GenreFixtures extends Fixture
             $manager->persist($genre);
         }
         $manager->flush();
+    }
+
+    public function loadGenresArray(): array
+    {
+
+        return [
+            "Fantasy", 
+            "Adventure", 
+            "Romance", 
+            "Contemporary", 
+            "Dystopian",  
+            "Mystery",  
+            "Horror",  
+            "Thriller",  
+            "Science-Fiction", 
+            "Children", 
+            "History", 
+            "Self-help", 
+            "Humor", 
+            "Art", 
+            "Poetry",
+        ];
     }
 }
