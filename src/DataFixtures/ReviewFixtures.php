@@ -8,9 +8,11 @@ use App\Entity\Livre;
 use App\Entity\Review;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+
 ;
 
-class ReviewFixtures extends Fixture
+class ReviewFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -25,8 +27,8 @@ class ReviewFixtures extends Fixture
         $faker = Faker\Factory::create();
         for ($i=0; $i < 10; $i++){
 
-            $bookChoise = $livres[rand(0, count($livres) - 1)];
-            $userChoise = $users[rand(0, count($users) - 1)];
+            $bookChoise = $livres[array_rand($livres)];
+            $userChoise = $users[array_rand($users)];
             
             $review = new Review(
                 [
@@ -40,11 +42,18 @@ class ReviewFixtures extends Fixture
                 //     'dateReview' => $faker->dateTime(),
                 // ]
             );
-            $review->setLivres($livres);
-            $review->setUsers($users);
+            $review->setLivres($bookChoise);
+            $review->setUsers($userChoise);
 
             $manager->persist($review);
         }
         $manager->flush();
+    }
+    public function getDependencies()
+    {
+        return ([
+            UserFixtures::class,
+            LivreFixtures::class
+        ]);
     }
 }
