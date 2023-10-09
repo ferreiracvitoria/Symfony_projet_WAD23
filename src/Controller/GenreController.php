@@ -17,14 +17,14 @@ class GenreController extends AbstractController
         $genresArray = $genreFixtures->loadGenresArray();
         // cette action affiche les genres averc de checkbox
         $formGenre = $this->createForm(GenreType::class, null, ['genre_choices' => $genresArray]);
-        // $formGenre->handleRequest($request);
+        $formGenre->handleRequest($request);
 
-        //     // chercher les genres
-        //     if ($formGenre->isSubmitted() && $formGenre->isValid()) {
-        //         $selectedGenres = $formGenre->get('genres')->getData();
+            // chercher les genres
+            if ($formGenre->isSubmitted() && $formGenre->isValid()) {
+                $selectedGenres = $formGenre->get('genres')->getData();
 
-        //         dump($selectedGenres);
-        //     }
+                dump($selectedGenres);
+            }
 
             // envoyer genres a vue , les afficher dans la vue
             $vars = ['form' => $formGenre->createView()];
