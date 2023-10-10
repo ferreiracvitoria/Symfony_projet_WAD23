@@ -3,6 +3,44 @@
 {% block title %}Hello HomeController!{% endblock %}
 
 {% block body %}
-<h2>Bienvenue au site!</h2>
+{# <header>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Genres that you like</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{path()}">Your list of books</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true" href"{{path ('app_recommendation_service')}}">Recommendation</a>
+        </li>
+    </ul>
+</reader> #}
+
+<h2>Books from our Site</h2>
+
+    {% for livre in arrayLivres %}
+        <div class="card" style="width: 18rem;">
+        <img src="{{ asset (livre.thumbnail) }}" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">{{livre.titre}}</h5>
+            <p class="card-text">{{livre.resume}}</p>
+            <a href="" class="btn btn-primary">More Information</a>
+        </div>
+        </div>
+    {% endfor %}
+
+            {# {{livre.titre}}<br>
+            {{livre.isbn}}<br>
+            {{livre.numberpages}}<br>
+            {{livre.dateEdition | date("d-m-Y")}}<br>
+            {{livre.resume}}<br>
+            {{livre.numberpages}}<br>
+            <img src="{{ asset (livre.thumbnail) }}"<br>
+            <img src="{{ asset (livre.smallThumbnail) }}"<br> #}
 <a href="{{ path ("app_logout") }}">Logout</a>
 {% endblock %}
+

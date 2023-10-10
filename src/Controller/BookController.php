@@ -2,23 +2,25 @@
 
 namespace App\Controller;
 
-use App\Service\BooksService;
-use Symfony\Component\HttpFoundation\Response;
+use App\Entity\Livre;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[Route('/book', name: 'app_book')]
-
 class BookController extends AbstractController
 {
-    public function books(BooksService $BooksService)
+    
+    #[Route('/home/accueil', name:"afficher_livres")]
+    public function arrayLivres(ManagerRegistry $doctrine)
     {
-        $title = 'Symfony'; // Titre du livre à rechercher
+        // Fetch the list of books from your fixture or data source
+        $livres = $doctrine->getRepository(Livre::class);
+        
+        $arrayLivres = $livres->findAll();
 
-        $bookData = $BooksService->searchBookByTitle($title);
+        $vars = ['arrayLivres' => $arrayLivres];
 
-        return $this->render('book/books.html.twig', [
-            'bookData' => $bookData,
-        ]);
+        return $this->render('home/accueil.html.twig', $vars);
     }
+
 }

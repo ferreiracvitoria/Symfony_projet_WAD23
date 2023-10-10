@@ -24,7 +24,6 @@ class LivreFixtures extends Fixture
                     'numberPages' => $faker->numberBetween(),
                     'dateEdition' => $faker->dateTime(),
                     'Resume' => $faker->text(),
-                    'dateEdition' => $faker->dateTime(),
                     'thumbnail' => $faker->imageUrl(200, 300),
                     'smallThumbnail'=> $faker->imageUrl(100, 150)
                     
