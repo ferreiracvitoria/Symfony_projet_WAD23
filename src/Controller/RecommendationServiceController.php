@@ -2,38 +2,45 @@
 
 namespace App\Controller;
 
+use App\Entity\Livre;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use NlpTools\Similarity\CosineSimilarity; // Importez CosineSimilarity
 
 class RecommendationServiceController extends AbstractController
 {
-    #[Route('/recommendation/service', name: 'app_recommendation_service')]
-    public function findSimilary(ManagerRegistry $doctrine, $livre): Response
+    #[Route('/recommendation/service/{livre}', name: 'app_recommendation_service')] // Ajoutez un paramètre de livre
+    public function findSimilarity(ManagerRegistry $doctrine, $livre): Response
     {
-        $livres = $doctrine->getRepository(Livre::class);
+        $livres = $doctrine->getRepository(Livre::class); // Assurez-vous que Livre est importé
         $arrayLivres = $livres->findAll();
 
-        // faire la compairaison 
+        $cosine = new CosineSimilarity();
 
-        // endregion
+        $similarities = [];
+        $tokenizer = new \NlpTools\Tokenizers\WhitespaceTokenizer();
 
+        foreach ($arrayLivres as $otherLivre) {
+            $tokens1 = $tokenizer->tokenize($livre->getDescription());
+            $tokens2 = $tokenizer->tokenize($otherLivre->getDescription());
 
-        // $similarites[] =['livre' => $livre, 'valSim'=>$similarite];
-        
-        // Define a custom comparison function
-        function customSort($livre1, $livre2) {
-            if ($livre1['valSim'] == $livre2['valSim']) {
-                return 0;
-            }
-            return ($livre1['valSim'] > $livre2['valSim']) ? -1 : 1;
+            $similarity = $cosine->similarity($tokens1, $tokens2);
+
+            $similarities[] = [
+                'livre' => $otherLivre,
+                'valSim' => $similarity,
+            ];
         }
-        
-        usort($array, 'customSort');
-        
-        print_r($array);
 
-        return $this->render('recommendation_service/findSimilary.html.twig', );
+        // Tri des livres en fonction de la similarité
+        usort($similarities, function ($livre1, $livre2) {
+            return $livre1['valSim'] <=> $livre2['valSim'];
+        });
+
+        return $this->render('recommendation_service/findSimilarity.html.twig', [
+            'similarities' => $similarities,
+        ]);
     }
 }
