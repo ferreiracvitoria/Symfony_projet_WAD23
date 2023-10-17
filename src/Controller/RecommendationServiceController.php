@@ -7,12 +7,12 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use NlpTools\Similarity\CosineSimilarity; // Importez CosineSimilarity
+use NlpTools\Similarity\CosineSimilarity; //imports de nlp-tools
 
 class RecommendationServiceController extends AbstractController
 {
     #[Route('/recommendation/service/{livre}', name: 'app_recommendation_service')] // Ajoutez un paramètre de livre
-    public function findSimilarity(ManagerRegistry $doctrine, $livre): Response
+    public function findSimilarity(ManagerRegistry $doctrine, Livre $livre): Response
     {
         $livres = $doctrine->getRepository(Livre::class); // Assurez-vous que Livre est importé
         $arrayLivres = $livres->findAll();
@@ -23,8 +23,8 @@ class RecommendationServiceController extends AbstractController
         $tokenizer = new \NlpTools\Tokenizers\WhitespaceTokenizer();
 
         foreach ($arrayLivres as $otherLivre) {
-            $tokens1 = $tokenizer->tokenize($livre->getDescription());
-            $tokens2 = $tokenizer->tokenize($otherLivre->getDescription());
+            $tokens1 = $tokenizer->tokenize($livre->getResume());
+            $tokens2 = $tokenizer->tokenize($otherLivre->getResume());
 
             $similarity = $cosine->similarity($tokens1, $tokens2);
 
