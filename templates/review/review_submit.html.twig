@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+
+$(document).ready(function () { // Initialize rating
+let rating = 0;
+ 
+// Handle star clicks
+$('#star-rating i').on('click', function () {
+let clickedRating = parseInt($(this).data('rating'));
+rating = clickedRating;
+updateRating();
+console.log('Clicked rating:', rating);
+});
+ 
+// Function to update the displayed rating
+function updateRating() {
+$('#star-rating i').removeClass('active');
+$('#star-rating i:lt(' + rating + ')').addClass('active');
+$('.rate-actual').text(rating);
+$('#hidden-rating').val(rating); // Set the hidden input field with the rating value
+}
+ 
+// Form submission handling
+$('form').submit(function (event) {});
+ 
+});
+<h5 class="contact-form__title">Rate and Write a Review</h5>
+{{ form_start(formReview, { 'attr': { 'class': 'contact-form', 'id': 'leave-review' }, 'action': path('review_submit') }) }}
+<!-- Add a hidden input field for the 'id' parameter -->
+<input type="hidden" name="activity_id" value="{{ activity.id }}"/>
+<div class="row">
+    <div class="col-md-6">
+        <div class="contact-form__rate-bx" id="star-rating">
+            <i class="fa fa-star" data-rating="1"></i>
+            <i class="fa fa-star" data-rating="2"></i>
+            <i class="fa fa-star" data-rating="3"></i>
+            <i class="fa fa-star" data-rating="4"></i>
+            <i class="fa fa-star" data-rating="5"></i>
+            <br><label for="hidden-rating" class="bold-title">Rating</label>
+        </div>
+    </p>
+    <p class="contact-form__rate-bx-show">
+        <span class="rate-actual">0</span>
+        / 5
+    </p>
+    <input type="hidden" name="rating" id="hidden-rating" value="0">
+ 
+    </div>
+    <div class="col-md-6">
+        <div class="contact-form__upload-btn">
+            <input class="contact-form__input-file" type="file" name="photo-upload" id="photo-upload"/>
+            <span>
+                <i class="la la-cloud-upload"></i>
+                Upload Photos
+            </span>
+        </div>
+    </div>
+</div>
+<div class="row"></div>
+{{ form_row(formReview.comment, {'label_attr': {'class': 'bold-title'}, 'attr': {'class': 'contact-form__textarea', 'name': 'comment', 'id': 'comment', 'placeholder': 'Comment'}}) }}
+{# <input class="contact-form__submit" type="submit" name="submit-contact" id="submit_contact" value="Submit Review" /> #}
+<input class="contact-form__submit" type="submit" name="submit-contact" id="submit_contact" value="Submit Review"/>
+ 
+ 
+{{ form_end(formReview,{'render_rest': false}) }}
+{% endblock %}
