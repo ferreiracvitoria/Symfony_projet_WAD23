@@ -3,10 +3,12 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
 
 $(document).ready(function () { // Initialize rating
 let rating = 0;
- 
+
 // Handle star clicks
 $('#star-rating i').on('click', function () {
 let clickedRating = parseInt($(this).data('rating'));
@@ -14,7 +16,7 @@ rating = clickedRating;
 updateRating();
 console.log('Clicked rating:', rating);
 });
- 
+
 // Function to update the displayed rating
 function updateRating() {
 $('#star-rating i').removeClass('active');
@@ -22,15 +24,18 @@ $('#star-rating i:lt(' + rating + ')').addClass('active');
 $('.rate-actual').text(rating);
 $('#hidden-rating').val(rating); // Set the hidden input field with the rating value
 }
- 
+
 // Form submission handling
-$('form').submit(function (event) {});
- 
+$('form').submit(function (event) {
+
 });
+});
+</script>
+
 <h5 class="contact-form__title">Rate and Write a Review</h5>
 {{ form_start(formReview, { 'attr': { 'class': 'contact-form', 'id': 'leave-review' }, 'action': path('review_submit') }) }}
-<!-- Add a hidden input field for the 'id' parameter -->
-<input type="hidden" name="activity_id" value="{{ activity.id }}"/>
+
+<input type="hidden" name="rating_id" value="{{ rating.id }}"/>
 <div class="row">
     <div class="col-md-6">
         <div class="contact-form__rate-bx" id="star-rating">
@@ -47,7 +52,7 @@ $('form').submit(function (event) {});
         / 5
     </p>
     <input type="hidden" name="rating" id="hidden-rating" value="0">
- 
+
     </div>
     <div class="col-md-6">
         <div class="contact-form__upload-btn">
@@ -60,10 +65,11 @@ $('form').submit(function (event) {});
     </div>
 </div>
 <div class="row"></div>
-{{ form_row(formReview.comment, {'label_attr': {'class': 'bold-title'}, 'attr': {'class': 'contact-form__textarea', 'name': 'comment', 'id': 'comment', 'placeholder': 'Comment'}}) }}
+{{ form_row(formReview.commentaire, {'label_attr': {'class': 'bold-title'}, 'attr': {'class': 'contact-form__textarea', 'name': 'comment', 'id': 'comment', 'placeholder': 'Comment'}}) }}
 {# <input class="contact-form__submit" type="submit" name="submit-contact" id="submit_contact" value="Submit Review" /> #}
 <input class="contact-form__submit" type="submit" name="submit-contact" id="submit_contact" value="Submit Review"/>
- 
- 
-{{ form_end(formReview,{'render_rest': false}) }}
+
+
+{{ form_end(formReview) }} 
+{# {'render_rest': false} #}
 {% endblock %}

@@ -11,10 +11,10 @@ use NlpTools\Similarity\CosineSimilarity; //imports de nlp-tools
 
 class RecommendationServiceController extends AbstractController
 {
-    #[Route('/recommendation/service/{livre}', name: 'app_recommendation_service')] // Ajoutez un paramètre de livre
+    #[Route('/recommendation/service/{livre}', name: 'app_recommendation_service')] 
     public function findSimilarity(ManagerRegistry $doctrine, Livre $livre): Response
     {
-        $livres = $doctrine->getRepository(Livre::class); // Assurez-vous que Livre est importé
+        $livres = $doctrine->getRepository(Livre::class); // Importer le Livre ici
         $arrayLivres = $livres->findAll();
 
         $cosine = new CosineSimilarity();

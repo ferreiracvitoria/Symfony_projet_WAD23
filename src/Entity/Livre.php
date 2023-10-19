@@ -37,7 +37,7 @@ class Livre
     #[ORM\ManyToMany(targetEntity: Genre::class, mappedBy: 'classify')]
     private Collection $classified;
 
-    #[ORM\OneToMany(mappedBy: 'correspond', targetEntity: Review::class)]
+    #[ORM\OneToMany(mappedBy: 'livres', targetEntity: Review::class)]
     private Collection $reviews;
 
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'livresLus')]
@@ -201,7 +201,7 @@ class Livre
     {
         if (!$this->reviews->contains($review)) {
             $this->reviews->add($review);
-            $review->setCorrespond($this);
+            $review->setLivres($this);
         }
 
         return $this;
@@ -211,8 +211,8 @@ class Livre
     {
         if ($this->reviews->removeElement($review)) {
             // set the owning side to null (unless already changed)
-            if ($review->getCorrespond() === $this) {
-                $review->setCorrespond(null);
+            if ($review->getLivres() === $this) {
+                $review->setLivres(null);
             }
         }
 

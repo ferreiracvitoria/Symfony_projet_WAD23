@@ -15,11 +15,11 @@ class HomeController extends AbstractController{
         return $this->render ('home/accueil.html.twig');
     } 
 
-    #[Route ('/', name:'home')]
-    public function readedbooks (){
+    // #[Route ('/', name:'home')]
+    // public function readedbooks (){
         
 
-        return $this->redirectToRoute ('home/accueil.html.twig');
+    //     return $this->redirectToRoute ('home/accueil.html.twig');
 
-    } 
+    // } 
 }
