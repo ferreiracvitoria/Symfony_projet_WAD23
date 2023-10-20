@@ -39,8 +39,22 @@ class RecommendationServiceController extends AbstractController
             return $livre1['valSim'] <=> $livre2['valSim'];
         });
 
-        return $this->render('recommendation_service/findSimilarity.html.twig', [
-            'similarities' => $similarities,
+        // similarite minimale
+        $min = 0.6;
+
+        $arrObjLivresChoisis = [];
+        foreach ($similarities as $arrLivreSim){
+            if ($arrLivreSim['valSim'] > $min){
+
+                $arrObjLivresChoisis[] = $arrLivreSim['livre'];
+            }
+        }
+
+        // dd($arrObjLivresChoisis);
+
+        return $this->render('recommendation_service/find_similarity.html.twig', 
+        [   'livre' => $livre,
+            'similarities' => $arrObjLivresChoisis,
         ]);
     }
 }

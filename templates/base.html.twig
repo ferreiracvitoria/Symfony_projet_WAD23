@@ -10,39 +10,16 @@
 
     </head>
     <body>
+    
     <header>
+
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container">
                 <!-- Slogan centralisé -->
                 <a class="navbar-brand mx-auto" href="#">Folhetim</a>
                 
-                <!-- Boutons de connexion à droite -->
-                <div class="ml-auto">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{path ('app_login')}}">Sign In</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{path ('app_register')}}">Sign Up</a>
-                        </li>
-                    </ul>
-                </div>
             </div>
         </nav>
-        <ul class="nav nav-tabs">
-            <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Genres that you like</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{path ('list_genres')}}">Your list of books</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" aria-disabled="true" href"#">Recommendation</a>
-            </li>
-        </ul>
     </header>
 
         {# Dans une nav on mettra le lien vers le logout:  #}

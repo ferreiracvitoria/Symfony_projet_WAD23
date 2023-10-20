@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 
-
 <head>
     {% block javascript %}
-            {{ encore_entry_link_tags('list_user') }}
+            {{ encore_entry_link_tags('all_books') }}
     {% endblock %}
 </head>
+
 {% block body %}
 
 <header>
-
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <!-- Slogan centralisé -->
@@ -25,8 +24,6 @@
             </div>
         </div>
     </nav>
-    
-
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="{{path ('all_books')}}">All our books</a>
@@ -38,19 +35,26 @@
             <a class="nav-link" href="#">Your list of books</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true" href"#">Recommendation</a> 
+            <a class="nav-link disabled" aria-disabled="true" href"#">Recommendation</a>
             {# {{path ('app_recommendation_service')}} #}
         </li>
     </ul>
 </header>
-
 <main>
-    <h1>Chose the genres that you are interested:</h1>
 
-    <form method="post">
-        {{ form_widget(form) }}
+    <h2>Books from our Site</h2>
 
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-    </form>
+    {% for livre in arrayLivres %}
+        <div class="card" style="width: 18rem;">
+        <img src="{{ asset (livre.thumbnail) }}" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">{{livre.titre}}</h5>
+            <p class="card-text">{{livre.resume}}</p>
+            <a href="" class="btn btn-primary">More Information</a>
+        </div>
+        </div>
+    {% endfor %}
+
 </main>
+
 {% endblock %}
