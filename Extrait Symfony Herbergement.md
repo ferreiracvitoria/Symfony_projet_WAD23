@@ -68,7 +68,7 @@ Repondez "yes" et tapez le password de votre utilisateur.
 
 **Ouvrez une session SSH** avec Putty pour vous connecter au serveur en console. Puis allez dans le dossier du projet dans le serveur:
 
-        cd /home/wad01/public_html/project1
+        cd /home/wad12/public_html/project1
 
 (adaptez le nom de l'utilisateur bien évidemment)
 
