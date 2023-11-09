@@ -18,7 +18,7 @@ class LivreFixtures extends Fixture
         for ($i = 0; $i < 10; $i++){
             $livre = new Livre(
                 [
-                    'titre' => $faker->text(),
+                    'titre' => $faker->word(3),
                     'isbn' => $faker->isbn10(),
                     'isbn' => $faker->isbn13(),
                     'numberPages' => $faker->numberBetween(),

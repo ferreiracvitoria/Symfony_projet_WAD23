@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\Livre;
 use App\Entity\Review;
+use App\Form\BookType;
 use App\Form\ReviewType;
 use App\Repository\LivreRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -11,8 +13,8 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class BookController extends AbstractController
 {
@@ -29,6 +31,42 @@ class BookController extends AbstractController
         $vars = ['arrayLivres' => $arrayLivres];
 
         return $this->render('rubriques/all_the_books.html.twig', $vars);
+    }
+
+    #[Route("/rechercher-livre", name:"rechercher_livre")]
+    public function rechercherLivre(Request $request, LivreRepository $livreRepository)
+    {
+        $form = $this->createForm(BookType::class, null, ['method' => 'POST']);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $titre = $form->get('titre')->getData();
+            $livre = $livreRepository->rechercherParTitre($titre);
+
+            return $this->render('rubriques/list_user.html.twig', ['livre' => $livre, 'form' => $form->createView()]);
+        }
+
+        return $this->render('rubriques/list_user.html.twig', ['form' => $form->createView()]);
+    }
+
+    #[Route("/ajouter-livre/{id}", name:"ajouter_livre")]
+    public function ajouterLivre(Livre $livresLu, EntityManagerInterface $entityManager)
+    {
+        $user = $this->getUser();
+        $livresLus = $this->getLivresLus();
+
+        // Assurez-vous que le livre n'est pas déjà dans la liste de recommandations de l'utilisateur
+        if (!$user->$livresLus->contains($livresLu)) {
+            $user->LivresLus->add($livresLu);
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Le livre a été ajouté à votre liste de recommandations.');
+        } else {
+            $this->addFlash('warning', 'Le livre est déjà dans votre liste de recommandations.');
+        }
+
+        return $this->redirectToRoute('liste_recommandations');
     }
 
     // #[Route('/review/submit{id}', requirements: ['id' => '\d+'], name: 'review_submit')]

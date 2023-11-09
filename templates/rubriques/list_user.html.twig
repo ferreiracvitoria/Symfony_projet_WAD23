@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Résultats de la recherche</h2>
+
+    {% if livre is not empty %}
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ livre.titre }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Auteurs :</h6>
+                <ul>
+                    {% for author in livre.owner %}
+                        <li>{{ author.nom }} {{ author.prenom }}</li>
+                    {% endfor %}
+                </ul>
+                <p class="card-text">Author: {{ livre.owner }}</p>
+                <p class="card-text">ISBN: {{ livre.isbn }}</p>
+                <p class="card-text">Edition date: {{ livre.dateEdition|date('Y-m-d') }}</p>
+                <p class="card-text">Number of pages: {{ livre.numberPages }}</p>
+                <p class="card-text">Resume: {{ livre.resume }}</p>
+                {# <img src="{{ asset (livre.thumbnail) }}"<br> #}
+                <img src="{{ asset (livre.smallThumbnail) }}"<br> 
+                <!-- Ajoutez d'autres propriétés du livre si nécessaire -->
+            </div>
+        </div>
+    {% else %}
+        <p>Book not found.</p>
+    {% endif %}
+    
+    {{ form_start(form) }}
+        {{ form_row(form.titre) }}
+        <button type="submit">Rechercher</button>
+    {{ form_end(form) }}
+{% endblock %}

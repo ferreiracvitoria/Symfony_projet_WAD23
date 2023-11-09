@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Résultats de la recherche</h2>
+
+    {% for livre in livres %}
+        <div>
+            <h3>{{ livre.titre }}</h3>
+            <p>Author: {{ livre.auteur }}</p>
+            <p>ISBN: {{livre.isbn}}</p><br>
+            <p>Number of pages: {{livre.numberpages}}</p><br>
+            <p>Edition date: {{livre.dateEdition | date("d-m-Y")}}</p><br>
+            <p>Resume: {{livre.resume}}</p><br>
+            <img src="{{ asset (livre.thumbnail) }}"<br>
+            <img src="{{ asset (livre.smallThumbnail) }}"<br> 
+
+            <form method="post" action="{{ path('ajouter_livre', {'id': livre.id}) }}">
+                <button type="submit">Ajouter à la liste</button>
+            </form>
+        </div>
+    {% endfor %}
+{% endblock %}
