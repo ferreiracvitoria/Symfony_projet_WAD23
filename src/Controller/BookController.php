@@ -33,20 +33,38 @@ class BookController extends AbstractController
         return $this->render('rubriques/all_the_books.html.twig', $vars);
     }
 
-    #[Route("/rechercher-livre", name:"rechercher_livre")]
+    // #[Route("/rechercher-livre", name:"rechercher_livre")]
+    // public function rechercherLivre(Request $request, LivreRepository $livreRepository)
+    // {
+    //     $form = $this->createForm(BookType::class, null, ['method' => 'POST']);
+    //     $form->handleRequest($request);
+
+    //     $livre = []; // Définissez la variable $livre comme un tableau vide par défaut
+
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $titre = $form->get('titre')->getData();
+    //         $livre = $livreRepository->rechercherParTitre($titre);
+
+    //         return $this->render('rubriques/list_user.html.twig', ['livre' => $livre, 'form' => $form->createView()]);
+    //     }
+
+    //     return $this->render('rubriques/list_user.html.twig', ['form' => $form->createView()]);
+    // }
+
+    #[Route("/rechercher-livre", name: "rechercher_livre")]
     public function rechercherLivre(Request $request, LivreRepository $livreRepository)
     {
         $form = $this->createForm(BookType::class, null, ['method' => 'POST']);
         $form->handleRequest($request);
 
+        $livre = []; // Utilisez un tableau pour stocker tous les livre trouvés
+
         if ($form->isSubmitted() && $form->isValid()) {
             $titre = $form->get('titre')->getData();
             $livre = $livreRepository->rechercherParTitre($titre);
-
-            return $this->render('rubriques/list_user.html.twig', ['livre' => $livre, 'form' => $form->createView()]);
         }
 
-        return $this->render('rubriques/list_user.html.twig', ['form' => $form->createView()]);
+        return $this->render('rubriques/list_user.html.twig', ['livre' => $livre, 'form' => $form->createView()]);
     }
 
     #[Route("/ajouter-livre/{id}", name:"ajouter_livre")]

@@ -2,6 +2,10 @@
 
 {% block body %}
     <h2>Résultats de la recherche</h2>
+    {{ form_start(form) }}
+        {{ form_row(form.titre) }}
+        <button type="submit">Rechercher</button>
+    {{ form_end(form) }}
 
     {% if livre is not empty %}
         <div class="card">
@@ -13,22 +17,20 @@
                         <li>{{ author.nom }} {{ author.prenom }}</li>
                     {% endfor %}
                 </ul>
-                <p class="card-text">Author: {{ livre.owner }}</p>
+                {# <p class="card-text">Author: {{ livre.owner }}</p> #}
                 <p class="card-text">ISBN: {{ livre.isbn }}</p>
                 <p class="card-text">Edition date: {{ livre.dateEdition|date('Y-m-d') }}</p>
                 <p class="card-text">Number of pages: {{ livre.numberPages }}</p>
                 <p class="card-text">Resume: {{ livre.resume }}</p>
-                {# <img src="{{ asset (livre.thumbnail) }}"<br> #}
                 <img src="{{ asset (livre.smallThumbnail) }}"<br> 
-                <!-- Ajoutez d'autres propriétés du livre si nécessaire -->
+                {# <img src="{{ asset (livre.thumbnail) }}"<br> #}
             </div>
         </div>
     {% else %}
         <p>Book not found.</p>
     {% endif %}
     
-    {{ form_start(form) }}
-        {{ form_row(form.titre) }}
-        <button type="submit">Rechercher</button>
-    {{ form_end(form) }}
-{% endblock %}
+{% endblock %} 
+
+
+
