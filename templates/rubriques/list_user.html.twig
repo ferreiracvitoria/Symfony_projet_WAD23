@@ -1,4 +1,10 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+
+<head>
+    {% block javascript %}
+            {{ encore_entry_link_tags('list_user') }}
+    {% endblock %}
+</head>
 
 {% block body %}
     <h2>Résultats de la recherche</h2>
@@ -25,6 +31,11 @@
                 <img src="{{ asset (livre.smallThumbnail) }}"<br> 
                 {# <img src="{{ asset (livre.thumbnail) }}"<br> #}
             </div>
+            <form action="{{ path('ajouter_livre', {'userId': user.id, 'livreId': livre.id}) }}" method="get">
+                <button id="ajoutLivreButton" data-url="{{ path('ajouter_livre', {'userId': user.id, 'livreId': livre.id}) }}" type="submit">Ajouter ce livre</button>
+            </form>
+            {# <form action="{{ path('ajouter_livre', {'userId': user.id, 'livreId': livre.id}) }}" method="get"> #}
+
         </div>
     {% else %}
         <p>Book not found.</p>

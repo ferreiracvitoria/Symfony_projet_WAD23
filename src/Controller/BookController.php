@@ -57,35 +57,63 @@ class BookController extends AbstractController
         $form = $this->createForm(BookType::class, null, ['method' => 'POST']);
         $form->handleRequest($request);
 
+
         $livre = []; // Utilisez un tableau pour stocker tous les livre trouvés
 
         if ($form->isSubmitted() && $form->isValid()) {
             $titre = $form->get('titre')->getData();
             $livre = $livreRepository->rechercherParTitre($titre);
         }
+        $user = $this->getUser();
 
-        return $this->render('rubriques/list_user.html.twig', ['livre' => $livre, 'form' => $form->createView()]);
+        return $this->render('rubriques/list_user.html.twig', ['livre' => $livre, 'user' =>$user, 'form' => $form->createView()]);
     }
 
-    #[Route("/ajouter-livre/{id}", name:"ajouter_livre")]
-    public function ajouterLivre(Livre $livresLu, EntityManagerInterface $entityManager)
+    #[Route('/ajouter-livre/{userId}/{livreId}', name: 'ajouter_livre')]
+    public function ajouterLecture(EntityManagerInterface $entityManager, $userId, $livreId): Response
     {
-        $user = $this->getUser();
-        $livresLus = $this->getLivresLus();
+        // Récupérer l'utilisateur
+        $user = $entityManager->getRepository(User::class)->find($userId);
 
-        // Assurez-vous que le livre n'est pas déjà dans la liste de recommandations de l'utilisateur
-        if (!$user->$livresLus->contains($livresLu)) {
-            $user->LivresLus->add($livresLu);
-            $entityManager->persist($user);
-            $entityManager->flush();
+        // Récupérer le livre
+        $livre = $entityManager->getRepository(Livre::class)->find($livreId);
 
-            $this->addFlash('success', 'Le livre a été ajouté à votre liste de recommandations.');
-        } else {
-            $this->addFlash('warning', 'Le livre est déjà dans votre liste de recommandations.');
+        // Vérifier si l'utilisateur et le livre existent
+        if (!$user || !$livre) {
+            throw $this->createNotFoundException('Utilisateur ou livre non trouvé.');
         }
 
-        return $this->redirectToRoute('liste_recommandations');
+        // Ajouter le livre à la liste des livres lus par l'utilisateur
+        $user->addLivresLu($livre);
+
+        // Enregistrer les modifications en base de données
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('rubriques/ajout_lecture.html.twig');
     }
+
+    // #[Route("/ajouter-livre/{id}", name:"ajouter_livre")]
+    // public function ajouterLivre(Livre $livresLu, EntityManagerInterface $entityManager)
+    // {
+    //     $user = $this->getUser();
+    //     // dd($user);
+        
+
+    //     // Assurez-vous que le livre n'est pas déjà dans la liste de recommandations de l'utilisateur
+    //     if (!$user->$this->livresLus->contains($livresLu)) {
+    //         $user->livresLus->add($livresLu);
+    //         $entityManager->persist($user);
+    //         $entityManager->flush();
+
+    //         $this->addFlash('success', 'Le livre a été ajouté à votre liste de recommandations.');
+    //     } else {
+    //         $this->addFlash('warning', 'Le livre est déjà dans votre liste de recommandations.');
+    //     }
+
+    //     return $this->redirectToRoute('rubriques/resultats_recherche.html.twig');
+    // }
+    
 
     // #[Route('/review/submit{id}', requirements: ['id' => '\d+'], name: 'review_submit')]
     // public function reviewSubmitAction(Request $request, EntityManagerInterface $em, ManagerRegistry $doctrine, LivreRepository $livreRep): Response {
