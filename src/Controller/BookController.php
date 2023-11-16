@@ -69,7 +69,7 @@ class BookController extends AbstractController
         return $this->render('rubriques/list_user.html.twig', ['livre' => $livre, 'user' =>$user, 'form' => $form->createView()]);
     }
 
-    #[Route('/ajouter-livre/{userId}/{livreId}', name: 'ajouter_livre')]
+    #[Route('/ajouter-livre', name: 'ajouter_livre')]
     public function ajouterLecture(EntityManagerInterface $entityManager, $userId, $livreId): Response
     {
         // Récupérer l'utilisateur
@@ -92,6 +92,7 @@ class BookController extends AbstractController
 
         return $this->redirectToRoute('rubriques/ajout_lecture.html.twig');
     }
+
 
     // #[Route("/ajouter-livre/{id}", name:"ajouter_livre")]
     // public function ajouterLivre(Livre $livresLu, EntityManagerInterface $entityManager)
