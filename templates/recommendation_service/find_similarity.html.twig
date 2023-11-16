@@ -3,6 +3,22 @@
 {% block title %}Hello RecommendationServiceController!{% endblock %}
 
 {% block body %}
+<header>
+<ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{{path ('all_books')}}">All our books</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{path ('list_genres')}}">Genres that you like</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{path ('rechercher_livre')}}">Your list of books</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true" href="{{path ('app_recommendation_service')}}">Recommendation</a>
+        </li>
+    </ul>
+</header>
 <h1>Similarité des Livres</h1>
     
     <table>

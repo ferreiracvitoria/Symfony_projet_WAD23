@@ -7,6 +7,39 @@
 </head>
 
 {% block body %}
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <!-- Slogan centralisé -->
+            <a class="navbar-brand mx-auto" href="#">Folhetim</a>
+            
+            <!-- Boutons de connexion à droite -->
+            <div class="ml-auto">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a href="{{ path ("app_logout") }}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{{path ('all_books')}}">All our books</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{path ('list_genres')}}">Genres that you like</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{path ('rechercher_livre')}}">Your list of books</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true" href="#">Recommendation</a>
+        </li>
+        {# "{{path ('app_recommendation_rubrique', {'livre': livre})}}" #}
+    </ul>
+</header>
+<main>
     <h2>Résultats de la recherche</h2>
     {{ form_start(form) }}
         {{ form_row(form.titre) }}
@@ -31,17 +64,19 @@
                 <img src="{{ asset (livre.smallThumbnail) }}"<br> 
                 {# <img src="{{ asset (livre.thumbnail) }}"<br> #}
             </div>
-            <form action="{{ path('ajouter_livre', {'userId': user.id, 'livreId': livre.id}) }}" method="get">
-                <button id="ajoutLivreButton" data-url="{{ path('ajouter_livre', {'userId': user.id, 'livreId': livre.id}) }}" type="submit">Ajouter ce livre</button>
+            <form method="get">
+                <a href="{{ path('ajouter_livre') }}">
+                <button type="submit">Ajouter ce livre</button>
+                </a>
             </form>
-            {# <form action="{{ path('ajouter_livre', {'userId': user.id, 'livreId': livre.id}) }}" method="get"> #}
+
+            {# <a href="{{ path('ajouter_livre', {userId:user.id}, {livreId:livre.id}) }}"> #}
+            
 
         </div>
     {% else %}
         <p>Book not found.</p>
     {% endif %}
+</main>
     
 {% endblock %} 
-
-
-
