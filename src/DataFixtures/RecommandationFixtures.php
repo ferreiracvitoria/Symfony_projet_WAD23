@@ -10,7 +10,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 ;
 
-class LectureFixtures extends Fixture implements DependentFixtureInterface
+class RecommandationFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -25,7 +25,7 @@ class LectureFixtures extends Fixture implements DependentFixtureInterface
         //3. Parcourir les users, pour chaque user, rajouter un livre aléatoire
         foreach($arrayUsers as $user){
             $randomIndex = array_rand($arrayLivres);
-            $user->addLivresLu($arrayLivres[$randomIndex]); 
+            $user->addLivresRecommande($arrayLivres[$randomIndex]); 
             $manager->persist($user);
         }
         $manager->flush();

@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\User;
+use App\Entity\Genre;
 use App\Entity\Livre;
 
 use Doctrine\Persistence\ObjectManager;
@@ -10,23 +10,20 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 ;
 
-class LectureFixtures extends Fixture implements DependentFixtureInterface
+class GenreLivreFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        //1. Obtenir tous les livres
         $livres = $manager->getRepository(Livre::class);
         $arrayLivres = $livres->findAll();
 
-        //2. Obtenir tous les users 
-        $users = $manager->getRepository(User::class);
-        $arrayUsers = $users->findAll();
+        $genres = $manager->getRepository(Genre::class);
+        $arrayGenres= $genres->findAll();
 
-        //3. Parcourir les users, pour chaque user, rajouter un livre aléatoire
-        foreach($arrayUsers as $user){
+        foreach($arrayGenres as $genre){
             $randomIndex = array_rand($arrayLivres);
-            $user->addLivresLu($arrayLivres[$randomIndex]); 
-            $manager->persist($user);
+            $genre->addClassify($arrayLivres[$randomIndex]); 
+            $manager->persist($genre);
         }
         $manager->flush();
     }
@@ -36,7 +33,7 @@ class LectureFixtures extends Fixture implements DependentFixtureInterface
     {
         return[
             LivreFixtures::class,
-            UserFixtures::class
+            GenreFixtures::class
         ];
     }
 }

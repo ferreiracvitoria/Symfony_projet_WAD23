@@ -25,13 +25,15 @@
         <thead>
             <tr>
                 <th>Livre</th>
-                <th>Similarité</th>
+                <th>Resume</th>
+
             </tr>
         </thead>
         <tbody>
             {% for similarity in similarities %}
                 <tr>
                     <td>{{ similarity.titre }}</td>
+                    <td>{{ similarity.resume }}</td>
                 </tr>
             {% endfor %}
         </tbody>

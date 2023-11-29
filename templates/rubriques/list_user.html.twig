@@ -64,10 +64,8 @@
                 <img src="{{ asset (livre.smallThumbnail) }}"<br> 
                 {# <img src="{{ asset (livre.thumbnail) }}"<br> #}
             </div>
-            <form method="get">
-                <a href="{{ path('ajouter_livre') }}">
-                <button type="submit">Ajouter ce livre</button>
-                </a>
+            <form method="post" action="{{ path('ajouter_livre_utilisateur', {'userId': user.id, 'livreId': livre.id}) }}">
+                <button type="submit" class="btn btn-primary">Ajouter ce livre</button>
             </form>
 
             {# <a href="{{ path('ajouter_livre', {userId:user.id}, {livreId:livre.id}) }}"> #}

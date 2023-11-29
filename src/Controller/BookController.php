@@ -33,109 +33,75 @@ class BookController extends AbstractController
         return $this->render('rubriques/all_the_books.html.twig', $vars);
     }
 
-    // #[Route("/rechercher-livre", name: "rechercher_livre")]
-    // public function rechercherLivre(
-    //     Request $request, 
-    //     LivreRepository $livreRepository,
-    //     EntityManagerInterface $entityManager
-    //     )
-    // {
-    //     $form = $this->createForm(BookType::class, null, ['method' => 'POST']);
-    //     $form->handleRequest($request);
 
 
-    //     $livre = []; // Utilisez un tableau pour stocker tous les livre trouvés
+//Recherche de livre par titre
+#[Route("/rechercher-livre", name: "rechercher_livre")]
+public function rechercherLivre(Request $request, LivreRepository $livreRepository)
+{
+    $form = $this->createForm(BookType::class, null, ['method' => 'POST']);
+    $form->handleRequest($request);
 
-    //     if ($form->isSubmitted() && $form->isValid()) {
-    //         $titre = $form->get('titre')->getData();
-    //         $livre = $livreRepository->rechercherParTitre($titre);
-    //     }
-    //     $user = $this->getUser();
+    $livre = []; // Utilisez un tableau pour stocker tous les livre trouvés
 
+    if ($form->isSubmitted() && $form->isValid()) {
+        $titre = $form->get('titre')->getData();
+        $livre = $livreRepository->rechercherParTitre($titre);
+    }
+    $user = $this->getUser();
+    // dd($user,$livre);
 
-    //     return $this->render('rubriques/list_user.html.twig', ['livre' => $livre, 'user' =>$user, 'form' => $form->createView()]);
-    // }
+    return $this->render('rubriques/list_user.html.twig', ['livre' => $livre, 'user' =>$user, 'form' => $form->createView()]);
+}
 
+#[Route("/ajouter-livre-utilisateur/{userId}/{livreId}", name: "ajouter_livre_utilisateur")]
+public function ajouterLivreUtilisateur(ManagerRegistry $doctrine, int $userId, int $livreId): Response
+{
+    // Récupérez l'utilisateur en fonction de l'ID (vous pouvez utiliser Doctrine ou votre propre logique)
+    $user = $doctrine->getRepository(User::class)->find($userId);
 
-    // #[Route("/ajouter-livre/{Id}", name: "ajouter_livre")]
+    // Récupérez le livre en fonction de l'ID (vous pouvez utiliser Doctrine ou votre propre logique)
+    $livre = $doctrine->getRepository(Livre::class)->find($livreId);
+
+    // Ajoutez le livre à la liste de l'utilisateur (ajustez cela en fonction de votre logique métier)
+    $user->addLivresLu($livre);
+
+    // Persistez les changements dans la base de données
+    $entityManager = $doctrine->getManager();
+    $entityManager->flush();
+
+    // Redirigez l'utilisateur vers la page des résultats de la recherche (ou une autre page de votre choix)
+    $vars = ['livre' => $livre,
+            'user' => $user];
+    // dd($vars, $livre);
+
+    return $this->render('rubriques/ajout_lecture.html.twig', $vars);
+}
+
+    // #[Route('/ajouter-livre/{userId}/{livreId}', name: 'ajouter_livre')]
     // public function ajouterLecture(EntityManagerInterface $entityManager, $userId, $livreId): Response
     // {
     //     // Récupérer l'utilisateur
+    //     $user = $this->getUser();
     //     $user = $entityManager->getRepository(User::class)->find($userId);
 
     //     // Récupérer le livre
     //     $livre = $entityManager->getRepository(Livre::class)->find($livreId);
-        
-        
+
     //     // Vérifier si l'utilisateur et le livre existent
     //     if (!$user || !$livre) {
     //         throw $this->createNotFoundException('Utilisateur ou livre non trouvé.');
     //     }
-        
-    //     $livre->addLecteur($user);
 
     //     // Ajouter le livre à la liste des livres lus par l'utilisateur
-    //     // $user->addLivresLu($livre);
+    //     $user->addLivresLu($livre);
 
     //     // Enregistrer les modifications en base de données
-    //     $entityManager->persist($livre);
+    //     $entityManager->persist($user);
     //     $entityManager->flush();
 
-    //     // Rediriger vers la page des résultats de recherche après l'ajout du livre
-    //     $parametresVue = [
-    //         'user' => $user,
-    //         'livre' => $livre,
-    //     ];
-    //     return $this->redirectToRoute('rubriques/ajout_lecture.html.twig', $parametresVue);
-
+    //     return $this->redirectToRoute('rubriques/ajout_lecture.html.twig');
     // }
-
-    // vielle version 
-
-    #[Route("/rechercher-livre", name: "rechercher_livre")]
-    public function rechercherLivre(Request $request, LivreRepository $livreRepository)
-    {
-        $form = $this->createForm(BookType::class, null, ['method' => 'POST']);
-        $form->handleRequest($request);
-
-
-        $livre = []; // Utilisez un tableau pour stocker tous les livre trouvés
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $titre = $form->get('titre')->getData();
-            $livre = $livreRepository->rechercherParTitre($titre);
-        }
-        $user = $this->getUser();
-        // dd($user,$livre);
-
-
-        return $this->render('rubriques/list_user.html.twig', ['livre' => $livre, 'user' =>$user, 'form' => $form->createView()]);
-    }
-
-    #[Route('/ajouter-livre/{userId}/{livreId}', name: 'ajouter_livre')]
-    public function ajouterLecture(EntityManagerInterface $entityManager, $userId, $livreId): Response
-    {
-        // Récupérer l'utilisateur
-        $user = $this->getUser();
-        $user = $entityManager->getRepository(User::class)->find($userId);
-
-        // Récupérer le livre
-        $livre = $entityManager->getRepository(Livre::class)->find($livreId);
-
-        // Vérifier si l'utilisateur et le livre existent
-        if (!$user || !$livre) {
-            throw $this->createNotFoundException('Utilisateur ou livre non trouvé.');
-        }
-
-        // Ajouter le livre à la liste des livres lus par l'utilisateur
-        $user->addLivresLu($livre);
-
-        // Enregistrer les modifications en base de données
-        $entityManager->persist($user);
-        $entityManager->flush();
-
-        return $this->redirectToRoute('rubriques/ajout_lecture.html.twig');
-    }
 
     
 
