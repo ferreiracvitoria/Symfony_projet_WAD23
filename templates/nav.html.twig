@@ -1,0 +1,23 @@
+<header>
+
+  
+    
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active"  href="{{path ('all_books')}}">All our books</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{path ('list_genres')}}">Genres that you like</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{path ('afficher_list_livres_lus')}}">Your list of books</a>
+            {# {{path ('rechercher_livre')}} #}
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('app_recommendation_service')}}" aria-disabled="true" href="">Recommendation</a>
+            {# {{ path('app_recommendation_rubrique', {'livre': livre.id}) }} #}
+            {# {{path ('app_recommendation_service')}}#}
+        </li> 
+    </ul>
+</header>

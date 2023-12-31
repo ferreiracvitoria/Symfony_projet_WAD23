@@ -1,41 +1,35 @@
-{% extends 'base.html.twig' %}
+{% extends "base.html.twig" %}
+{% block stylesheets %}
+	{{parent()}}
+	{{ encore_entry_link_tags('all_books')}}
 
-{% block title %}Hello RecommendationServiceController!{% endblock %}
-
-{% block body %}
-<header>
-<ul class="nav nav-tabs">
-        <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{{path ('all_books')}}">All our books</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{path ('list_genres')}}">Genres that you like</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{path ('rechercher_livre')}}">Your list of books</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true" href="{{path ('app_recommendation_service')}}">Recommendation</a>
-        </li>
-    </ul>
-</header>
-<h1>Similarité des Livres</h1>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>Livre</th>
-                <th>Resume</th>
-
-            </tr>
-        </thead>
-        <tbody>
-            {% for similarity in similarities %}
-                <tr>
-                    <td>{{ similarity.titre }}</td>
-                    <td>{{ similarity.resume }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 {% endblock %}
+{% block body %}
+
+
+	{% include 'nav.html.twig' %}
+
+
+	<main>
+		<h1>Similarité des Livres</h1>
+
+		<table>
+			<thead>
+				<tr>
+					<th>Livre</th>
+					<th>Resume</th>
+
+				</tr>
+			</thead>
+			<tbody>
+				{% for similarity in similarities %}
+					<tr>
+						<td>{{ similarity.titre }}</td>
+						<td>{{ similarity.resume }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+        </main>
+	{% endblock %}

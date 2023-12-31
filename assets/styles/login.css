@@ -107,6 +107,7 @@ background: var(--main-dark);
 color: var(--color-white)
 }
 
+
 .tab-group .active a {
         background: var(--main);
         color: var(--color-white);

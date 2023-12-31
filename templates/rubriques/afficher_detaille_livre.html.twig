@@ -1,3 +1,4 @@
+
 {% extends "base.html.twig" %}
 {% block stylesheets %}
 	{{parent()}}
@@ -8,13 +9,11 @@
 
 	{% include 'nav.html.twig' %}
 <main>
-    <h2>Résultats de la recherche</h2>
-    {{ form_start(form) }}
+  {{ form_start(form) }}
         {{ form_row(form.titre) }}
         <button type="submit">Rechercher</button>
     {{ form_end(form) }}
-
-    {% if livre is not empty %}
+  
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">{{ livre.titre }}</h5>
@@ -38,9 +37,7 @@
             
 
         </div>
-    {% else %}
-        <p>Book not found.</p>
-    {% endif %}
+
 </main>
     
 {% endblock %} 

@@ -1,67 +1,44 @@
-<!DOCTYPE html>
+{% extends "base.html.twig" %}
+{% block stylesheets %}
+	{{parent()}}
+	{{ encore_entry_link_tags('all_books')}}
 
-<head>
-    {% block javascript %}
-            {{ encore_entry_link_tags('all_books') }}
-    {% endblock %}
-</head>
-
+{% endblock %}
 {% block body %}
 
-<header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <!-- Slogan centralisé -->
-            <a class="navbar-brand mx-auto" href="#">Folhetim</a>
-            
-            <!-- Boutons de connexion à droite -->
-            <div class="ml-auto">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a href="{{ path ("app_logout") }}">Logout</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <ul class="nav nav-tabs">
-        <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{{path ('all_books')}}">All our books</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{path ('list_genres')}}">Genres that you like</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{path ('rechercher_livre')}}">Your list of books</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{path ('ajouter_livre_utilisateur', {'userId': user.id, 'livreId': livre.id})}}">Your list</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true" href="#">Recommendation</a>
-        </li>
-        {# "{{path ('app_recommendation_rubrique', {'livre': livre})}}" #}
-    </ul>
-    {# , {'livre': livre} #}
-</header>
+	{% include 'nav.html.twig' %}
 
-    <h2>Résultats de la recherche</h2>
-    <h3>{{ livre.titre }}</h3>
-    {# <p>Author: {{ livre.auteur }}</p> #}
-    <p>ISBN: {{livre.isbn}}</p><br>
-    <p>Number of pages: {{livre.numberpages}}</p><br>
-    <p>Edition date: {{livre.dateEdition | date("d-m-Y")}}</p><br>
-    <p>Resume: {{livre.resume}}</p><br>
-    <img src="{{ asset (livre.thumbnail) }}"<br>
-    <img src="{{ asset (livre.smallThumbnail) }}"<br> 
-    {# {% for livres in livre %}
-            <h3>{{ livres.titre }}</h3>
-            <p>Author: {{ livres.auteur }}</p>
-            <p>ISBN: {{livres.isbn}}</p><br>
-            <p>Number of pages: {{livres.numberpages}}</p><br>
-            <p>Edition date: {{livres.dateEdition | date("d-m-Y")}}</p><br>
-            <p>Resume: {{livres.resume}}</p><br>
-            <img src="{{ asset (livres.thumbnail) }}"<br>
-            <img src="{{ asset (livres.smallThumbnail) }}"<br> 
-    {% endfor %} #}
+
+	<main>
+
+
+		{{ form_start(form) }}
+		{{ form_row(form.titre) }}
+		<button type="submit">Rechercher</button>
+		{{ form_end(form) }}
+
+		<h2>Books from our Site</h2>
+		<div class="myBooks">
+			{% for livre in livre %}
+
+				<div class="card" style="width: 18rem;">
+					<img src="{{ asset (livre.thumbnail) }}" class="card-img-top" alt="...">
+					<div class="card-body">
+						<h5 class="card-title">{{livre.titre}}</h5>
+						<p class="card-text">{{livre.resume}}</p>
+						<div style="display: flex; justify-content: space-between;">
+							<a href="{{ path('detaille_livre', {'livreId': livre.id}) }}" class="btn btn-primary" style="width: 132px;height: 30px;">More</a>
+
+							<a href="" class="btn btn-primary" style="width: 132px;height: 30px;">Delete</a>
+                            {# {{ path('supprimer_livre_favoris', {'livreId': livre.id}) }} #}
+						</div>
+
+					</div>
+				</div>
+
+
+			{% endfor %}
+		</div>
+
+	</main>
 {% endblock %}

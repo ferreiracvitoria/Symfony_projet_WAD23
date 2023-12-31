@@ -19,64 +19,170 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class BookController extends AbstractController
 {
     #[isGranted('ROLE_USER')]
-    #[Route('/Our/Books', name:"all_books")]
-    public function arrayLivres(ManagerRegistry $doctrine)
+    #[Route('/Our/Books', name: "all_books")]
+    public function arrayLivres(Request $request, ManagerRegistry $doctrine, LivreRepository $livreRepository)
     {
+        $form = $this->createForm(BookType::class, null, ['method' => 'POST']);
+        $form->handleRequest($request);
         // Fetch the list of books from your fixture or data source
         $livres = $doctrine->getRepository(Livre::class);
         $arrayLivres = $livres->findAll();
 
+        $vars = [
+            'arrayLivres' => $arrayLivres,
+            'form' => $form->createView()
+        ];
+        if ($form->isSubmitted() && $form->isValid()) {
 
 
-        $vars = ['arrayLivres' => $arrayLivres];
-
-        return $this->render('rubriques/all_the_books.html.twig', $vars);
+            $titre = $form->get('titre')->getData();
+            $livre = $livreRepository->rechercherParTitre($titre);
+            $vars = [
+                'livre' => $livre,
+                'form' => $form->createView()
+            ];
+            return $this->render('rubriques/list_user.html.twig', $vars);
+        } else {
+            return $this->render('rubriques/all_the_books.html.twig', $vars);
+        }
     }
 
 
 
-//Recherche de livre par titre
-#[Route("/rechercher-livre", name: "rechercher_livre")]
-public function rechercherLivre(Request $request, LivreRepository $livreRepository)
-{
-    $form = $this->createForm(BookType::class, null, ['method' => 'POST']);
-    $form->handleRequest($request);
+    // //Recherche de livre par titre
+    // #[Route("/rechercher-livre", name: "rechercher_livre")]
+    // public function rechercherLivre(Request $request, LivreRepository $livreRepository)
+    // {
+    //     $form = $this->createForm(BookType::class, null, ['method' => 'POST']);
+    //     $form->handleRequest($request);
 
-    $livre = []; // Utilisez un tableau pour stocker tous les livre trouvés
+    //     $livre = []; // Utilisez un tableau pour stocker tous les livre trouvés
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        $titre = $form->get('titre')->getData();
-        $livre = $livreRepository->rechercherParTitre($titre);
+    //     if ($form->isSubmitted() && $form->isValid()) {
+
+    //         $titre = $form->get('titre')->getData();
+    //         $livre = $livreRepository->rechercherParTitre($titre);
+    //     }
+    //     $user = $this->getUser();
+    //     // dd($user,$livre);
+
+    //     return $this->render('rubriques/list_user.html.twig', ['livre' => $livre]);
+    // }
+
+    #[Route("/ajouter-livre-favoris/{livreId}", name: "ajouter_livre_favoris")]
+    public function ajouterLivreUtilisateur(Request $req, ManagerRegistry $doctrine,LivreRepository $livreRepository): Response
+    {
+
+        //gerer le form de recherche sue la pages de la liste des livres lus
+        $form = $this->createForm(BookType::class, null, ['method' => 'POST']);
+        $form->handleRequest($req);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+
+            $titre = $form->get('titre')->getData();
+            $livre = $livreRepository->rechercherParTitre($titre);
+            $vars = [
+                'livre' => $livre,
+                'form' => $form->createView()
+            ];
+            return $this->render('rubriques/list_user.html.twig', $vars);
+        } else {
+            //Obtenir le user Actuel
+            $user = $this->getUser();
+            // //obtenir le livre
+            $id = $req->get('livreId');
+            $entityManager = $doctrine->getManager();
+            $rep = $entityManager->getRepository(Livre::class);
+
+            $livre = $rep->find($id);
+
+            // Ajoutez le livre à la liste de l'utilisateur (ajustez cela en fonction de votre logique métier)
+            $user->addLivresLu($livre);
+
+
+            // Persistez les changements dans la base de données
+            $entityManager = $doctrine->getManager();
+            $entityManager->flush();
+
+            // Redirigez l'utilisateur vers la page des résultats de la recherche (ou une autre page de votre choix)
+            $favorites = $user->getLivresLus();
+            $vars = [
+                'livre' => $favorites,
+                'form' => $form->createView()
+            ];
+            // dd($vars, $livre);
+
+            return $this->render('rubriques/ajout_lecture.html.twig', $vars);
+        }
     }
-    $user = $this->getUser();
-    // dd($user,$livre);
 
-    return $this->render('rubriques/list_user.html.twig', ['livre' => $livre, 'user' =>$user, 'form' => $form->createView()]);
-}
+    #[Route("/livre/detaille/{livreId}", name: "detaille_livre")]
+    public function afficherDetailleLivre(Request $req, LivreRepository $rep, LivreRepository $livreRepository)
+    {
+        $form = $this->createForm(BookType::class, null, ['method' => 'POST']);
+        $form->handleRequest($req);
+        $id = $req->get('livreId');
+        $livre = $rep->find($id);
+        $vars = [
+            'livre' => $livre,
+            'form' => $form->createView()
+        ];
+        if ($form->isSubmitted() && $form->isValid()) {
 
-#[Route("/ajouter-livre-utilisateur/{userId}/{livreId}", name: "ajouter_livre_utilisateur")]
-public function ajouterLivreUtilisateur(ManagerRegistry $doctrine, int $userId, int $livreId): Response
-{
-    // Récupérez l'utilisateur en fonction de l'ID (vous pouvez utiliser Doctrine ou votre propre logique)
-    $user = $doctrine->getRepository(User::class)->find($userId);
 
-    // Récupérez le livre en fonction de l'ID (vous pouvez utiliser Doctrine ou votre propre logique)
-    $livre = $doctrine->getRepository(Livre::class)->find($livreId);
+            $titre = $form->get('titre')->getData();
+            $livre = $livreRepository->rechercherParTitre($titre);
+            $vars = [
+                'livre' => $livre,
+                'form' => $form->createView()
+            ];
+            return $this->render('rubriques/list_user.html.twig', $vars);
+        } else {
+            return $this->render('rubriques/afficher_detaille_livre.html.twig', $vars);
+        }
+    }
 
-    // Ajoutez le livre à la liste de l'utilisateur (ajustez cela en fonction de votre logique métier)
-    $user->addLivresLu($livre);
 
-    // Persistez les changements dans la base de données
-    $entityManager = $doctrine->getManager();
-    $entityManager->flush();
 
-    // Redirigez l'utilisateur vers la page des résultats de la recherche (ou une autre page de votre choix)
-    $vars = ['livre' => $livre,
-            'user' => $user];
-    // dd($vars, $livre);
 
-    return $this->render('rubriques/ajout_lecture.html.twig', $vars);
-}
+
+    
+    #[Route("/afficher-livre-favoris", name: "afficher_list_livres_lus")]
+    public function afficherLivreUtilisateur(Request $req, ManagerRegistry $doctrine,LivreRepository $livreRepository): Response
+    {
+
+        //gerer le form de recherche sue la pages de la liste des livres lus
+        $form = $this->createForm(BookType::class, null, ['method' => 'POST']);
+        $form->handleRequest($req);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+
+            $titre = $form->get('titre')->getData();
+            $livre = $livreRepository->rechercherParTitre($titre);
+            $vars = [
+                'livre' => $livre,
+                'form' => $form->createView()
+            ];
+            return $this->render('rubriques/list_user.html.twig', $vars);
+        } else {
+            //Obtenir le user Actuel
+            $user = $this->getUser();
+        
+
+            // Redirigez l'utilisateur vers la page des résultats de la recherche (ou une autre page de votre choix)
+            $favorites = $user->getLivresLus();
+            $vars = [
+                'livre' => $favorites,
+                'form' => $form->createView()
+            ];
+            // dd($vars, $livre);
+
+            return $this->render('rubriques/ajout_lecture.html.twig', $vars);
+        }
+    }
+
 
     // #[Route('/ajouter-livre/{userId}/{livreId}', name: 'ajouter_livre')]
     // public function ajouterLecture(EntityManagerInterface $entityManager, $userId, $livreId): Response
@@ -103,26 +209,26 @@ public function ajouterLivreUtilisateur(ManagerRegistry $doctrine, int $userId, 
     //     return $this->redirectToRoute('rubriques/ajout_lecture.html.twig');
     // }
 
-    
+
 
     // #[Route('/review/submit{id}', requirements: ['id' => '\d+'], name: 'review_submit')]
     // public function reviewSubmitAction(Request $request, EntityManagerInterface $em, ManagerRegistry $doctrine, LivreRepository $livreRep): Response {
 
-        
+
     //     //reviewform
     //     $review = new Review();
     //     $formReview = $this->createForm(ReviewType::class, $review, ['method' => 'POST']);
     //     $formReview->handleRequest($request);
-        
+
     //     //associate the review with the book read
     //     $id = $request->get('id');
     //     $review = $livreRep->find($id);
-        
+
     //     //associate the review with the user who logged in
     //     $review = $this->getUser();
 
     //     if ($formReview->isSubmitted() && $formReview->isValid()) {
-            
+
     //         // Retrieve the rating and comment from the Symfony form
     //         $rating = $request->request->get('rating');
     //         $commentaire = $formReview->get('commentaire')->getData();
@@ -135,12 +241,12 @@ public function ajouterLivreUtilisateur(ManagerRegistry $doctrine, int $userId, 
     //         $dateReview = new \DateTime();
     //         $review->setDateReview($dateReview);
 
-            
+
     //         // Get the entity manager and persist the review
     //         $em = $doctrine->getManager();
     //         $em->persist($review);
     //         $em->flush();
-            
+
     //         // Redirect to the review submit page (adjust the route as needed)s
     //         return $this->render('/review_submit.html.twig', [
     //             'formReview' => $formReview->createView(),

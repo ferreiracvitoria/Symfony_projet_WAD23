@@ -27,7 +27,7 @@ class GenreController extends AbstractController
             }
 
             // envoyer genres a vue , les afficher dans la vue
-            $vars = ['form' => $formGenre->createView()];
+            $vars = ['formGenre' => $formGenre->createView()];
 
         return $this->render('genre/list_genres.html.twig', $vars);
     }
